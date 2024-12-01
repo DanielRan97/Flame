@@ -1,0 +1,17 @@
+.spinner {
+    width: 47px;
+    height: 64px;
+    animation: rotate3D 5s linear infinite;
+    transform-origin: center;
+    transform: rotateX(23.5deg);
+  }
+  
+  /* 3D rotation animation */
+  @keyframes rotate3D {
+    0% {
+      transform: rotateX(23.5deg) rotateY(0deg);
+    }
+    100% {
+      transform: rotateX(23.5deg) rotateY(360deg);
+    }
+  }

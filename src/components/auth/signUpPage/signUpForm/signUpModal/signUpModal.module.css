@@ -1,0 +1,19 @@
+.signUpModalButton {
+    background-color: var(--button-bg);
+    color: var(--text-sceneryColor);
+    border-radius: 30px;
+    height: 40px;
+    padding: 0 15px;
+    border: 1px solid black;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    -ms-border-radius: 30px;
+    -o-border-radius: 30px;
+}
+
+.signUpModalButton:hover {
+    background-color: var(--secondary-color);
+    color: var(--text-sceneryColor);
+}

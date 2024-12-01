@@ -1,0 +1,14 @@
+.Auth .AuthPageHeader{
+    color:var(--text-sceneryColor);
+}
+
+.Auth .changeForm{
+    cursor: pointer;
+    color: orange;
+    font-size: 14px;
+    text-decoration: underline;
+}
+
+.Auth .changeForm:hover{
+    color: white;
+}

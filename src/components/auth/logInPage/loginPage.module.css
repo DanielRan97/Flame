@@ -1,0 +1,8 @@
+.LoginPage {
+    margin-top: 20px;
+}
+
+.LoginPage .inputError{
+    font-size: 15px;
+    color: red;
+}
