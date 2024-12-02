@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import classes from "./signUpForm.module.css";
 import { useSelector } from "react-redux";
-import Loading from "../../../../utilities/loading/loading";
+import Loading from "../../../../hoc/UI/loading/loading";
 
 const SignUpForm = ({ sendDataFromForm }) => {
   const [formData, setFormData] = useState({

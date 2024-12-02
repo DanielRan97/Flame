@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import {
   loginWithGoogle,
   loginWithFacebook,
+  authFailure,
 } from "../../../../ridux/reducers/authSlice";
 import { useNavigate } from "react-router-dom";
 
@@ -15,16 +16,25 @@ const PopUpLogin = () => {
   const navigate = useNavigate();
 
   const googleLogInHandler = async () => {
-    const res = await dispatch(loginWithGoogle());
-    if (res.uid) {
-      navigate("/");
+    try {
+      const res = await dispatch(loginWithGoogle());
+      if (res.uid) {
+        navigate("/");
+      }
+    } catch (error) {
+      dispatch(authFailure("Failed to log in with google"))
     }
   };
 
   const facebookLogInHandler = async () => {
-    const res = await dispatch(loginWithFacebook());
-    if (res.uid) {
-      navigate("/");
+    try {
+      const res = await dispatch(loginWithFacebook());
+      if (res) {
+        navigate("/");
+      }
+    } catch (error) {
+      dispatch(authFailure("Failed to log in with facebook"))
+
     }
   };
 

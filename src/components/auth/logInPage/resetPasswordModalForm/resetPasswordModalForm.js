@@ -4,7 +4,8 @@ import withClass from "../../../../hoc/withClass/withClass";
 import classes from "./resetPasswordModalForm.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { ResetPassword } from "../../../../ridux/reducers/authSlice";
-import Loading from "../../../../utilities/loading/loading";
+import Loading from "../../../../hoc/UI/loading/loading";
+import { checkIfEmailExistDB } from "../../../../firebase/firebaseDB";
 
 const ResetPasswordModalForm = ({ modalClose }) => {
   const [email, setEmail] = useState("");
@@ -23,6 +24,12 @@ const ResetPasswordModalForm = ({ modalClose }) => {
     setError("");
 
     const trimmedEmail = email.trim();
+    const checkMailExist = await checkIfEmailExistDB(trimmedEmail);
+
+    if (checkMailExist === false) {
+      setError("The email address does not appear in the system, please note that you entered the email address correctly.");
+      return;
+    }
 
     if (!isEmailValid(trimmedEmail)) {
       setError("Please enter a valid email address.");
@@ -34,8 +41,8 @@ const ResetPasswordModalForm = ({ modalClose }) => {
       if (response === true) {
         setMailSent("A password change email has been sent to you.");
       }
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      setError(error.message);
     }
   };
 

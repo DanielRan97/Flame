@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Aux from "../../../../hoc/Auxiliary/Auxiliary";
 import classes from "./loginForm.module.css";
 import { useSelector } from "react-redux";
-import Loading from "../../../../utilities/loading/loading";
+import Loading from "../../../../hoc/UI/loading/loading";
 import PopUpLogin from "../popUpLogin/popUpLogin";
 
 const LoginForm = ({ sendFormData, forgetPassword, startForgetPassword }) => {

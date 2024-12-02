@@ -1,6 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { signUpFB, loginFB, logoutFB, resetPasswordFB, loginWithGoogleFB, loginWithFacebookFB } from "../../firebase/firebaseFunctions";
-import { setUserToDB, getOneUserFromDB, checkIfUserNameExistDB, checkIfEmailExistDB } from "../../firebase/firebaseDB";
+import {
+  signUpFB,
+  loginFB,
+  logoutFB,
+  resetPasswordFB,
+  loginWithGoogleFB,
+  loginWithFacebookFB,
+} from "../../firebase/firebaseFunctions";
+import {
+  setUserToDB,
+  getOneUserFromDB,
+  checkIfUserNameExistDB,
+  checkIfEmailExistDB,
+} from "../../firebase/firebaseDB";
+import getFirebaseAuthErrorMessage from "../../utilities/fireBaseError/fireBaseError";
 
 //sign up
 export const signUp = (userData) => async (dispatch) => {
@@ -8,29 +21,33 @@ export const signUp = (userData) => async (dispatch) => {
     dispatch(authStart());
 
     const emailExist = await checkIfEmailExistDB(userData.email);
-    if(emailExist === true){
+    if (emailExist === true) {
       throw new Error(`${userData.email} already exists, try to log in`);
     }
 
     const userNameExist = await checkIfUserNameExistDB(userData.userName);
-    if(userNameExist === true){
-      throw new Error(`${userData.userName} already exists, choose another user name`);
+    if (userNameExist === true) {
+      throw new Error(
+        `${userData.userName} already exists, choose another user name`
+      );
     }
 
     const res = await signUpFB(userData.email, userData.password);
 
     if (!res || !res.uid) {
-      throw new Error("The connection with the server failed, please check your internet connection");
+      throw new Error(
+        "The connection with the server failed, please check your internet connection"
+      );
     }
 
     const user = {
       uid: res.uid,
-      name: userData.name?.trim() + " " +  userData.lastName?.trim()|| "",
+      displayName:
+        userData.name?.trim() + " " + userData.lastName?.trim() || "",
       userName: userData.userName?.trim() || "",
       email: userData.email?.trim() || "",
       birthDay: userData.birthDay?.trim() || "",
       creationTime: new Date().toDateString(),
-      photoURL: res.photoURL?.trim() || "",
       phoneNumber: res.phoneNumber?.trim() || "",
       role: "user",
       loginType: "email and password",
@@ -38,11 +55,10 @@ export const signUp = (userData) => async (dispatch) => {
     await setUserToDB(user, res.uid);
     dispatch(authStop());
     return user;
-  } catch (error) {
-    dispatch(authFailure(error.message || "An error occurred during sign-up."));
+  } catch (error) {    
+    dispatch(authFailure(getFirebaseAuthErrorMessage(error) || error.message));
   }
 };
-
 
 //log in
 export const logIn = (userData) => async (dispatch) => {
@@ -51,23 +67,24 @@ export const logIn = (userData) => async (dispatch) => {
 
     const res = await loginFB(userData.email, userData.password);
     if (!res || !res.uid) {
-      throw new Error("The connection with the server failed, please check your internet connection.");
+      throw new Error(
+        "The connection with the server failed, please check your internet connection."
+      );
     }
 
     if (res.emailVerified) {
       const getUser = await getOneUserFromDB(res.uid);
       const user = {
-        uid: getUser.data.uid,
-        name: getUser.data.name ?? "",
-        userName: getUser.data.userName ?? "",
-        email: getUser.data.email ?? userData.email,
-        birthDay: getUser.data.birthDay ?? "",
-        creationTime: getUser.data.creationTime ?? "",
-        photoURL: getUser.data.photoURL ?? "",
-        phoneNumber: getUser.data.phoneNumber ?? "",
-        role: getUser.data.role ?? "user",
+        uid: getUser.uid,
+        displayName: getUser.name ?? "",
+        userName: getUser.userName ?? "",
+        email: getUser.email ?? userData.email,
+        birthDay: getUser.birthDay ?? "",
+        creationTime: getUser.creationTime ?? "",
+        phoneNumber: getUser.phoneNumber ?? "",
+        role: getUser.role ?? "user",
         loginType: "email and password",
-        lastLogin: new Date().toISOString()
+        lastLogin: new Date().toISOString(),
       };
 
       dispatch(authSuccess(user));
@@ -75,29 +92,29 @@ export const logIn = (userData) => async (dispatch) => {
       await setUserToDB(user, res.uid);
 
       return user;
-    }else{
-      throw new Error("Please check that you have verified your account by email.")
+    } else {
+      throw new Error(
+        "Please check that you have verified your account by email."
+      );
     }
   } catch (error) {
-    const errorMessage =
-      error.message || "An unexpected error occurred during login.";
-    dispatch(authFailure(errorMessage));
-    throw new Error(errorMessage);
+    dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
+
   }
 };
 
 // reset password
-export const ResetPassword = (email) => async(dispatch) => {
-try{
-  dispatch(authStart());
-  await resetPasswordFB(email);
-  return true;
-}catch (error) {
-  dispatch(authFailure("The connection with the server failed, please check your internet connection."));
-  return false;
-}finally{
-  dispatch(authStop());
-};
+export const ResetPassword = (email) => async (dispatch) => {
+  try {
+    dispatch(authStart());
+    await resetPasswordFB(email);
+    return true;
+  } catch (error) {
+    dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
+    return false;
+  } finally {
+    dispatch(authStop());
+  }
 };
 
 //sign out
@@ -107,64 +124,67 @@ export const signOut = () => async (dispatch) => {
     await logoutFB();
     dispatch(logout());
   } catch (error) {
-    dispatch(authFailure("The connection with the server failed, please check your internet connection."));
+    dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
   } finally {
     dispatch(authStop());
   }
 };
 
 //Log in with google
-export const loginWithGoogle = () => async (dispatch) =>{
+export const loginWithGoogle = () => async (dispatch) => {
   dispatch(authStart());
+
   try {
     const res = await loginWithGoogleFB();
+    const userData = await getOneUserFromDB(res.uid);
+    const data = userData || res;
     const user = {
-      uid: res.uid,
-      name: res.displayName ?? "",
-      userName: res.displayName.replace(/\s+/g, "") ?? "",
-      email: res.email ?? "",
-      birthDay: res.birthDay ?? "",
-      creationTime: res.metadata.creationTime ?? "",
-      photoURL: res.photoURL ?? "",
-      phoneNumber: res.phoneNumber ?? "",
-      role: res.role ?? "user",
+      uid: data.uid,
+      displayName: data.displayName || "",
+      userName: (data.displayName || "").replace(/\s+/g, ""),
+      email: data.email || "",
+      birthDay: data.birthDay || "",
+      creationTime: res.metadata?.creationTime,
+      phoneNumber: data.phoneNumber || "",
+      role: data.role || "user",
       loginType: "google",
-      lastLogin: new Date().toISOString()
+      lastLogin: new Date().toISOString(),
     };
-    await setUserToDB(user, res.uid);
+
+    await setUserToDB(user, data.uid);
     dispatch(authSuccess(user));
     return user;
   } catch (error) {
-    dispatch(authFailure("failed to log in with google."));
-  };
+    dispatch(authFailure(getFirebaseAuthErrorMessage(error)));  }
 };
 
 //Log in with facebook
-export const loginWithFacebook = () => async (dispatch) =>{
+export const loginWithFacebook = () => async (dispatch) => {
   dispatch(authStart());
   try {
     const res = await loginWithFacebookFB();
-    console.log(res);
+    const userData = await getOneUserFromDB(res.uid);
+    const data = userData || res;
     const user = {
-      uid: res.uid,
-      name: res.displayName ?? "",
-      userName: res.displayName.replace(/\s+/g, "") ?? "",
-      email: res.email ?? "",
-      birthDay: res.birthDay ?? "",
-      creationTime: res.metadata.creationTime ?? "",
-      photoURL: res.photoURL ?? "",
-      phoneNumber: res.phoneNumber ?? "",
-      role: res.role ?? "user",
+      uid: data.uid,
+      displayName: data.displayName || "",
+      userName: (data.displayName || "").replace(/\s+/g, ""),
+      email: data.email || "",
+      birthDay: data.birthDay || "",
+      creationTime: res.metadata?.creationTime,
+      phoneNumber: data.phoneNumber || "",
+      role: data.role || "user",
       loginType: "facebook",
-      lastLogin: new Date().toISOString()
+      lastLogin: new Date().toISOString(),
     };
-    await setUserToDB(user, res.uid);
+
+    await setUserToDB(user, data.uid);
     dispatch(authSuccess(user));
-    return true;
+    return user;
   } catch (error) {
-    dispatch(authFailure("failed to log in with facebook."));
-    return false;
-  };
+    dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
+    throw new Error(error.message);
+  }
 };
 
 // Slice
@@ -209,7 +229,8 @@ const authSlice = createSlice({
 });
 
 // Export actions
-export const { logout, authStart, authSuccess, authFailure, authStop } = authSlice.actions;
+export const { logout, authStart, authSuccess, authFailure, authStop } =
+  authSlice.actions;
 
 // Export reducer
 export default authSlice.reducer;

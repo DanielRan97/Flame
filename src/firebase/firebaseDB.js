@@ -4,7 +4,7 @@ import { database, ref, set, get } from './firebase';
 const setUserToDB = (data , uid) => {
     const userRef = ref(database, 'users/' + uid);
     set(userRef, {
-        data
+        ...data
       })
       .catch((error) => {
         console.error('Error writing document: ', error);
@@ -21,10 +21,10 @@ const getOneUserFromDB = async (uid) => {
     if (snapshot.exists()) {
       return snapshot.val();
     } else {
-      throw new Error('User not found.');
+      return false;
     }
   } catch (error) {
-    throw error;
+    throw new Error('Failed to get user');
   }
 };
 
@@ -41,7 +41,7 @@ const checkIfUserNameExistDB = async (newUserName) => {
     const trimmedNewUserName = newUserName.trim();
 
     for (const key of Object.keys(users)) {
-      if (users[key].data.userName.trim() === trimmedNewUserName) {
+      if (users[key].userName.trim() === trimmedNewUserName) {
         return true;
       }
     }
@@ -65,7 +65,7 @@ const checkIfEmailExistDB = async (newEmail) => {
     const trimmedNewUEmail = newEmail.trim();
 
     for (const key of Object.keys(users)) {
-      if (users[key].data.email.trim() === trimmedNewUEmail) {
+      if (users[key].email.trim() === trimmedNewUEmail) {
         return true;
       }
     }

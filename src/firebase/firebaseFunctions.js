@@ -19,7 +19,7 @@ const loginWithGoogleFB = async () => {
     const user = result.user;
     return user;
   } catch (error) {
-    throw new Error(error.message);
+    throw error;
   }
 };
 
@@ -32,15 +32,8 @@ const loginWithFacebookFB = async () => {
     const user = result.user;
     return user;
   } catch (error) {
-    if (error.code === "auth/popup-closed-by-user") {
-      console.error("User closed the login popup before completing the sign-in.");
-    } else if (error.code === "auth/cancelled-popup-request") {
-      console.error("Popup request was cancelled (usually because a popup was already open).");
-    } else {
-      console.error("An error occurred during login:", error.message);
-    }
-    throw new Error(error.message);
-  };
+    throw error;
+  }
 };
 
 //email verification
@@ -48,10 +41,9 @@ const emailVerification = async (user) => {
   try {
     await sendEmailVerification(user);
   } catch (error) {
-    throw new Error(error.message);
+    throw error;
   }
 };
-
 
 //sign up with email and password
 const signUpFB = async (email, password) => {
@@ -65,7 +57,7 @@ const signUpFB = async (email, password) => {
     return userCredential.user;
   } catch (error) {
     console.error("Error during sign up:", error.message);
-    throw new Error(error.message);
+    throw error;
   }
 };
 
@@ -79,7 +71,7 @@ const loginFB = async (email, password) => {
     );
     return userCredential.user;
   } catch (error) {
-    throw new Error(error.message);
+    throw error;
   }
 };
 
@@ -89,17 +81,16 @@ const resetPasswordFB = async (email) => {
     await sendPasswordResetEmail(auth, email);
   } catch (error) {
     console.error("Error sending password reset email:", error.message);
-    throw new Error(error.message);
+    throw error;
   }
 };
-
 
 //log out
 const logoutFB = async () => {
   try {
     await signOut(auth);
   } catch (error) {
-    throw new Error(error.message);
+    throw error;
   }
 };
 
@@ -110,5 +101,5 @@ export {
   resetPasswordFB,
   emailVerification,
   loginWithGoogleFB,
-  loginWithFacebookFB
+  loginWithFacebookFB,
 };
