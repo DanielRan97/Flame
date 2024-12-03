@@ -16,7 +16,7 @@ export const getFirebaseAuthErrorMessage = (error) => {
     "auth/too-many-requests": "Too many requests. Please try again later.",
     "auth/requires-recent-login":
       "This operation requires recent authentication. Please sign in again.",
-    "auth/invalid-credential": "Wrong email or password.",
+    "auth/invalid-credential": "You entered an incorrect email or password, if you don't have an account yet please sign up.",
     "auth/account-exists-with-different-credential":
       "An account already exists with the same email address but different sign-in credentials.",
     "auth/invalid-verification-code": "The verification code is invalid.",

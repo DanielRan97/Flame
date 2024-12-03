@@ -22,7 +22,7 @@ const LoginPage = () => {
     try {
       const res = await dispatch(logIn(userData));
       if (res.uid) {
-        navigate(`/`);
+        navigate(`/myFlame`);
       }
     } catch (err) {
       setForgetPasswordState(true);

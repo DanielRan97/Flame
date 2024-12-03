@@ -120,11 +120,13 @@ export const ResetPassword = (email) => async (dispatch) => {
 //sign out
 export const signOut = () => async (dispatch) => {
   try {
-    dispatch(authStart());
+     dispatch(authStart());
     await logoutFB();
-    dispatch(logout());
+     dispatch(logout());
+    return true;
   } catch (error) {
     dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
+    return false;
   } finally {
     dispatch(authStop());
   }
@@ -191,7 +193,7 @@ export const loginWithFacebook = () => async (dispatch) => {
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: {},
+    user: null,
     loading: false,
     error: "",
   },

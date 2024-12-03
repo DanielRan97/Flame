@@ -6,44 +6,48 @@ import classes from './nav.module.css';
 import Aux from '../../Auxiliary/Auxiliary';
 import withClass from '../../withClass/withClass';
 import { signOut } from '../../../ridux/reducers/authSlice';
+import ProfileButton from "./profileButton/profileButton"
 
 const Nav = () => {
     const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const isUserLogIn = useSelector((state) => state.auth.user);
+    const isUserLoggedIn = useSelector((state) => state.auth.user?.uid);
 
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
-    }, [theme, isUserLogIn]);
-
-    const navToAuth = (page) => () => {
-        navigate(`/${page}`);
-    };
+    }, [theme]);
 
     const handleSignOut = async () => {
-        await dispatch(signOut());
+        const res = await dispatch(signOut());
+        if (!res.payload) {
+            navigate('/auth');
+        }
     };
 
-    const isObjEmpty = (obj) => JSON.stringify(obj) === '{}';
+    const handleNavigation = (path) => () => {
+        navigate(path);
+    };
 
     return (
         <Aux>
-            <nav>
-                <h2 onClick={navToAuth('')} className={classes.NavHeader}>
-                    Flame
-                </h2>
-                <button onClick={toggleTheme}>
-                    Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme
-                </button>
-
-                <button
-                    className={classes.AuthButton}
-                    onClick={isObjEmpty(isUserLogIn) ? navToAuth('auth') : handleSignOut}
-                >
-                    {isObjEmpty(isUserLogIn) ? 'Log in/Sign up' : 'Sign Out'}
-                </button>
-            </nav>
+            <header className={classes.NavHeaderWrapper}>
+                <nav className={classes.NavBar}>
+                    <h2 onClick={handleNavigation('/')} className={classes.NavHeader}>
+                        Flame
+                    </h2>
+                    <button onClick={toggleTheme} className={classes.ThemeToggleButton}>
+                        Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme
+                    </button>
+                    <button
+                        className={classes.AuthButton}
+                        onClick={isUserLoggedIn ? handleSignOut : handleNavigation('/auth')}
+                    >
+                        {isUserLoggedIn ? 'Sign Out' : 'Log in/Sign up'}
+                    </button>
+                    <ProfileButton />
+                </nav>
+            </header>
         </Aux>
     );
 };

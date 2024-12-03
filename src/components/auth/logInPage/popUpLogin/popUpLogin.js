@@ -19,7 +19,7 @@ const PopUpLogin = () => {
     try {
       const res = await dispatch(loginWithGoogle());
       if (res.uid) {
-        navigate("/");
+        navigate("/myFlame");
       }
     } catch (error) {
       dispatch(authFailure("Failed to log in with google"))
@@ -30,7 +30,7 @@ const PopUpLogin = () => {
     try {
       const res = await dispatch(loginWithFacebook());
       if (res) {
-        navigate("/");
+        navigate("/myFlame");
       }
     } catch (error) {
       dispatch(authFailure("Failed to log in with facebook"))

@@ -7,7 +7,7 @@ import LoginPage from "../../components/auth/logInPage/loginPage";
 import { useDispatch } from "react-redux";
 import { authStop } from "../../ridux/reducers/authSlice";
 
-const Auth = () => {
+const AuthContainer = () => {
   const [formState, setFormState] = useState("logIn");
   const dispatch = useDispatch();
 
@@ -36,5 +36,5 @@ const changeForm = () => {
   );
 };
 
-export default withClass(Auth , classes.Auth);
+export default withClass(AuthContainer , classes.AuthContainer);
 
