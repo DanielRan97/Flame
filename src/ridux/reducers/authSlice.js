@@ -55,7 +55,7 @@ export const signUp = (userData) => async (dispatch) => {
     await setUserToDB(user, res.uid);
     dispatch(authStop());
     return user;
-  } catch (error) {    
+  } catch (error) {
     dispatch(authFailure(getFirebaseAuthErrorMessage(error) || error.message));
   }
 };
@@ -76,7 +76,7 @@ export const logIn = (userData) => async (dispatch) => {
       const getUser = await getOneUserFromDB(res.uid);
       const user = {
         uid: getUser.uid,
-        displayName: getUser.name ?? "",
+        displayName: getUser.displayName ?? "",
         userName: getUser.userName ?? "",
         email: getUser.email ?? userData.email,
         birthDay: getUser.birthDay ?? "",
@@ -93,9 +93,8 @@ export const logIn = (userData) => async (dispatch) => {
 
       return user;
     } else {
-      throw new Error(
-        "Please check that you have verified your account by email."
-      );
+      dispatch(authFailure("Please check that you have verified your account by email."));
+
     }
   } catch (error) {
     dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
