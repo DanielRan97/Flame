@@ -1,20 +1,43 @@
 import React from "react";
-import classes from "./modal.module.css";
+import { Modal, Box, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
-
-const Modal = ({ isOpen, onClose, children }) => {
-  if (!isOpen) return null;
-
+const MaterialModal = ({ isOpen, onClose, children }) => {
   return (
-    <div className={classes.modalOverlay} onClick={onClose}>
-      <div className={classes.modalFullScreen} onClick={(e) => e.stopPropagation()}>
-        <button className={classes.modalClose} onClick={onClose}>
-          &times;
-        </button>
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      aria-labelledby="modal-title"
+      aria-describedby="modal-description"
+      disableScrollLock={true}
+    >
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 400,
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          borderRadius: 2,
+          p: 3,
+        }}
+      >
+        <IconButton
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            top: 8,
+            right: 8,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         {children}
-      </div>
-    </div>
+      </Box>
+    </Modal>
   );
 };
 
-export default Modal;
+export default MaterialModal;

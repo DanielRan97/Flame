@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import Aux from "../../../../hoc/Auxiliary/Auxiliary";
-import withClass from "../../../../hoc/withClass/withClass";
-import classes from "./resetPasswordModalForm.module.css";
+import {
+  Box,
+  TextField,
+  Typography,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { ResetPassword } from "../../../../ridux/reducers/authSlice";
-import Loading from "../../../../hoc/UI/loading/loading";
 import { checkIfEmailExistDB } from "../../../../firebase/firebaseDB";
 
 const ResetPasswordModalForm = ({ modalClose }) => {
@@ -27,7 +30,9 @@ const ResetPasswordModalForm = ({ modalClose }) => {
     const checkMailExist = await checkIfEmailExistDB(trimmedEmail);
 
     if (checkMailExist === false) {
-      setError("The email address does not appear in the system, please note that you entered the email address correctly.");
+      setError(
+        "The email address does not appear in the system. Please ensure the email is correct."
+      );
       return;
     }
 
@@ -39,52 +44,80 @@ const ResetPasswordModalForm = ({ modalClose }) => {
     try {
       const response = await dispatch(ResetPassword(trimmedEmail));
       if (response === true) {
-        setMailSent("A password change email has been sent to you.");
+        setMailSent("A password reset email has been sent to you.");
       }
     } catch (error) {
       setError(error.message);
     }
   };
 
-  const buttonForm =
-    mailSent === "" ? (
-      <button
-        className={classes.changePassButton}
-        disabled={!isEmailValid(email)}
-        type="submit"
-      >
-        Send me link
-      </button>
-    ) : (
-      <button className={classes.changePassButton} onClick={modalClose}>
-        Close
-      </button>
-    );
-
   return (
-    <Aux>
-      <form onSubmit={resetPassHandler}>
-        <h3>Change your Password</h3>
-        {mailSent === "" && <input
+    <Box
+      component="form"
+      onSubmit={resetPassHandler}
+      sx={{
+        maxWidth: 400,
+        margin: "auto",
+        padding: 3,
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        boxShadow: 3,
+        borderRadius: 2,
+        backgroundColor: "background.paper",
+      }}
+    >
+      <Typography variant="h5" textAlign="center" gutterBottom>
+        Change your Password
+      </Typography>
+
+      {mailSent === "" && (
+        <TextField
+          label="Email Address"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your Email address"
-        />}
-        {!isEmailValid(email) && email.length > 2 && (
-          <p className={classes.errorMessage}>
-            Please enter a valid email address.
-          </p>
-        )}
-        {error && <p className={classes.errorMessage}>{error}</p>}
-        {mailSent !== "" && <p>{mailSent}</p>}
-        {authLoading ? <Loading /> : buttonForm}
-      </form>
-    </Aux>
+          placeholder="Enter your email address"
+          fullWidth
+          error={!isEmailValid(email) && email.length > 2}
+          helperText={
+            !isEmailValid(email) && email.length > 2
+              ? "Please enter a valid email address."
+              : ""
+          }
+        />
+      )}
+
+      {error && (
+        <Typography color="error" textAlign="center">
+          {error}
+        </Typography>
+      )}
+
+      {mailSent !== "" && (
+        <Typography textAlign="center" color="primary">
+          {mailSent}
+        </Typography>
+      )}
+
+      {authLoading ? (
+        <Box display="flex" justifyContent="center">
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          disabled={mailSent === "" ? !isEmailValid(email) : false}
+          onClick={mailSent !== "" ? modalClose : undefined}
+        >
+          {mailSent === "" ? "Send me link" : "Close"}
+        </Button>
+      )}
+    </Box>
   );
 };
 
-export default withClass(
-  ResetPasswordModalForm,
-  classes.ResetPasswordModalForm
-);
+export default ResetPasswordModalForm;

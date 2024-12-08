@@ -1,7 +1,12 @@
 import React, { useState } from "react";
-import classes from "./signUpForm.module.css";
+import {
+  TextField,
+  Button,
+  Typography,
+  Box,
+  CircularProgress,
+} from "@mui/material";
 import { useSelector } from "react-redux";
-import Loading from "../../../../hoc/UI/loading/loading";
 
 const SignUpForm = ({ sendDataFromForm }) => {
   const [formData, setFormData] = useState({
@@ -22,6 +27,7 @@ const SignUpForm = ({ sendDataFromForm }) => {
     password: "",
     birthDay: "",
   });
+
   const authLoading = useSelector((state) => state.auth.loading);
   const authError = useSelector((state) => state.auth.error);
 
@@ -30,18 +36,10 @@ const SignUpForm = ({ sendDataFromForm }) => {
 
     switch (name) {
       case "name":
-        if (value.trim().length < 2) {
-          error = "First name must be 2-15 characters long.";
-        }
-        break;
       case "lastName":
-        if (value.trim().length < 2) {
-          error = "Last name must be 2-15 characters long.";
-        }
-        break;
       case "userName":
-        if (value.trim().length < 2) {
-          error = "userName must be 2-15 characters long.";
+        if (value.trim().length < 2 || value.trim().length > 15) {
+          error = `${name} must be between 2-15 characters.`;
         }
         break;
       case "email":
@@ -52,7 +50,7 @@ const SignUpForm = ({ sendDataFromForm }) => {
         break;
       case "password":
         if (value.length < 8) {
-          error = "Password must be 8-15 characters long.";
+          error = "Password must be at least 8 characters.";
         }
         break;
       case "birthDay":
@@ -98,6 +96,7 @@ const SignUpForm = ({ sendDataFromForm }) => {
         ) && Object.values(formErrors).every((err) => err === "");
       return { ...updatedData, formIsValid: isFormValid };
     });
+
     setFormErrors((prevErrors) => ({
       ...prevErrors,
       [name]: error,
@@ -110,119 +109,113 @@ const SignUpForm = ({ sendDataFromForm }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={classes.SignUpForm}>
-      <h1>Sign Up</h1>
-      <div>
-        <label>
-          <p>First Name:</p>
-          <input
-            minLength={2}
-            maxLength={15}
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-          {formErrors.name && (
-            <p className={classes.inputError}>{formErrors.name}</p>
-          )}
-        </label>
-      </div>
-      <div>
-        <label>
-          <p>Last Name:</p>
-          <input
-            minLength={2}
-            maxLength={15}
-            type="text"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            required
-          />
-          {formErrors.lastName && (
-            <p className={classes.inputError}>{formErrors.lastName}</p>
-          )}
-        </label>
-      </div>
-      <div>
-        <label>
-          <p>User Name:</p>
-          <input
-            minLength={2}
-            maxLength={15}
-            type="text"
-            name="userName"
-            value={formData.userName}
-            onChange={handleChange}
-            required
-          />
-          {formErrors.userName && (
-            <p className={classes.inputError}>{formErrors.userName}</p>
-          )}
-        </label>
-      </div>
-      <div>
-        <label>
-          <p>Email:</p>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-          {formErrors.email && (
-            <p className={classes.inputError}>{formErrors.email}</p>
-          )}
-        </label>
-      </div>
-      <div>
-        <label>
-          <p>Password:</p>
-          <input
-            minLength={2}
-            maxLength={15}
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          {formErrors.password && (
-            <p className={classes.inputError}>{formErrors.password}</p>
-          )}
-        </label>
-      </div>
-      <div>
-        <label>
-          <p>Birthday:</p>
-          <input
-            type="date"
-            name="birthDay"
-            value={formData.birthDay}
-            onChange={handleChange}
-            required
-          />
-          {formErrors.birthDay && (
-            <p className={classes.inputError}>{formErrors.birthDay}</p>
-          )}
-        </label>
-      </div>
-      {authError !== "" && <p className={classes.inputError}>{authError}</p>}
+    <Box
+    component="form"
+    onSubmit={handleSubmit}
+    sx={{
+      maxWidth: 400,
+      margin: "auto",
+      padding: 3,
+      display: "flex",
+      flexDirection: "column",
+      gap: 2,
+      boxShadow: 3,
+      borderRadius: 2,
+      backgroundColor: "background.paper",
+      }}
+    >
+      <Typography variant="h4" textAlign="center" gutterBottom>
+        Sign Up
+      </Typography>
+
+      <TextField
+        label="First Name"
+        type="text"
+        name="name"
+        value={formData.name}
+        onChange={handleChange}
+        error={!!formErrors.name}
+        helperText={formErrors.name}
+        required
+      />
+
+      <TextField
+        label="Last Name"
+        type="text"
+        name="lastName"
+        value={formData.lastName}
+        onChange={handleChange}
+        error={!!formErrors.lastName}
+        helperText={formErrors.lastName}
+        required
+      />
+
+      <TextField
+        label="User Name"
+        type="text"
+        name="userName"
+        value={formData.userName}
+        onChange={handleChange}
+        error={!!formErrors.userName}
+        helperText={formErrors.userName}
+        required
+      />
+
+      <TextField
+        label="Email"
+        type="email"
+        name="email"
+        value={formData.email}
+        onChange={handleChange}
+        error={!!formErrors.email}
+        helperText={formErrors.email}
+        required
+      />
+
+      <TextField
+        label="Password"
+        type="password"
+        name="password"
+        value={formData.password}
+        onChange={handleChange}
+        error={!!formErrors.password}
+        helperText={formErrors.password}
+        required
+      />
+
+      <TextField
+        label="Birthday"
+        type="date"
+        name="birthDay"
+        value={formData.birthDay}
+        onChange={handleChange}
+        InputLabelProps={{ shrink: true }}
+        error={!!formErrors.birthDay}
+        helperText={formErrors.birthDay}
+        required
+      />
+
+      {authError && (
+        <Typography color="error" textAlign="center">
+          {authError}
+        </Typography>
+      )}
+
       {authLoading ? (
-        <Loading />
+        <Box display="flex" justifyContent="center">
+          <CircularProgress />
+        </Box>
       ) : (
-        <button
-          disabled={!formData.formIsValid}
+        <Button
           type="submit"
-          className={classes.signUpFormButton}
+          variant="contained"
+          color="primary"
+          disabled={!formData.formIsValid}
         >
           Sign Up
-        </button>
+        </Button>
       )}
-    </form>
+    </Box>
   );
 };
 

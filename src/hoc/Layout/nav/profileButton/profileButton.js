@@ -1,15 +1,17 @@
 import React from 'react';
-import Aux from '../../../../hoc/Auxiliary/Auxiliary.js';
-import withClass from '../../../withClass/withClass.js';
+import Aux from '../../../Auxiliary/Auxiliary.js';
 import classes from "./profileButton.module.css";
+import ProfileMenu from './profileMenu/profileMenu.js';
+import withClass from '../../../withClass/withClass.js';
+const ProfileButton = () => {
 
-const profileButton = () => {
 
   return (
     <Aux>
-        <button></button>
+        <button className={classes.profilePhotoButton}>
+        </button>
     </Aux>
   );
 };
 
-export default withClass(profileButton , classes.profileButton);
+export default withClass(ProfileButton , classes.profileButton);

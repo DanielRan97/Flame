@@ -5,8 +5,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--primary-color);
-  color: var(--text-color);
   transition: all 0.3s ease;
   direction: ltr;
 }
@@ -14,34 +12,6 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
-
-:root {
-  --primary-color: #1e1b1b;
-  --secondary-color: orange;
-  --button-bg: black;
-  --button-bg-secondary: orange;
-  --text-primaryColor: black;
-  --text-sceneryColor: white;
-}
-
-[data-theme="dark"] {
-  --primary-color: black;
-  --secondary-color: #1e1b1b;
-  --button-bg: orange;
-  --button-bg-secondary: black;
-  --text-primaryColor: orange;
-  --text-sceneryColor: white;
-
-}
-
-[data-theme="light"] {
-  --primary-color: #1e1b1b;
-  --secondary-color: orange;
-  --button-bg: black;
-  --button-bg-secondary: orange;
-  --text-primaryColor: black;
-  --text-sceneryColor: white;
 }
 
 

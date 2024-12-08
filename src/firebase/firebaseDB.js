@@ -7,7 +7,7 @@ const setUserToDB = (data , uid) => {
         ...data
       })
       .catch((error) => {
-        console.error('Error writing document: ', error);
+        throw new Error(error.message);
       });
 
 }

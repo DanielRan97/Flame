@@ -1,14 +1,8 @@
-import Aux from "../../../../hoc/Auxiliary/Auxiliary";
-import withClass from "../../../../hoc/withClass/withClass";
-import classes from "./popUpLogin.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle, faFacebook } from "@fortawesome/free-brands-svg-icons";
+import React from "react";
+import { Box, IconButton } from "@mui/material";
+import { Google, Facebook } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import {
-  loginWithGoogle,
-  loginWithFacebook,
-  authFailure,
-} from "../../../../ridux/reducers/authSlice";
+import { loginWithGoogle, loginWithFacebook, authFailure } from "../../../../ridux/reducers/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const PopUpLogin = () => {
@@ -22,7 +16,7 @@ const PopUpLogin = () => {
         navigate("/myFlame");
       }
     } catch (error) {
-      dispatch(authFailure("Failed to log in with google"))
+      dispatch(authFailure("Failed to log in with Google"));
     }
   };
 
@@ -33,27 +27,35 @@ const PopUpLogin = () => {
         navigate("/myFlame");
       }
     } catch (error) {
-      dispatch(authFailure("Failed to log in with facebook"))
-
+      dispatch(authFailure("Failed to log in with Facebook"));
     }
   };
 
   return (
-    <Aux>
-      <div className={classes.iconContainer}>
-        <FontAwesomeIcon
-          icon={faGoogle}
-          className={classes.popUpIcon}
-          onClick={googleLogInHandler}
-        />
-        <FontAwesomeIcon
-          icon={faFacebook}
-          className={classes.popUpIcon}
-          onClick={facebookLogInHandler}
-        />
-      </div>
-    </Aux>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        gap: 2,
+        mt: 2,
+      }}
+    >
+      <IconButton
+        onClick={googleLogInHandler}
+        sx={{ color: "#DB4437" }} // Google red color
+        aria-label="Login with Google"
+      >
+        <Google fontSize="large" />
+      </IconButton>
+      <IconButton
+        onClick={facebookLogInHandler}
+        sx={{ color: "#4267B2" }} // Facebook blue color
+        aria-label="Login with Facebook"
+      >
+        <Facebook fontSize="large" />
+      </IconButton>
+    </Box>
   );
 };
 
-export default withClass(PopUpLogin, classes.PopUpLogin);
+export default PopUpLogin;

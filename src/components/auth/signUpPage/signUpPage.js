@@ -19,7 +19,6 @@ const SignUpPage = ({ routeToLogin }) => {
       const res = await dispatch(signUp(data));
       res !== undefined ? setSignUpModalState(true) : setSignUpModalState(false);
     } catch (err) {
-      console.error("Sign Up Error:", err);
       setError(err.message || "An error occurred during sign-up.");
       if (signUpModalState) {
         setSignUpModalState(false);

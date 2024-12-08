@@ -56,7 +56,6 @@ const signUpFB = async (email, password) => {
     await emailVerification(userCredential.user);
     return userCredential.user;
   } catch (error) {
-    console.error("Error during sign up:", error.message);
     throw error;
   }
 };
@@ -80,8 +79,7 @@ const resetPasswordFB = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email);
   } catch (error) {
-    console.error("Error sending password reset email:", error.message);
-    throw error;
+    throw new Error (error.message);
   }
 };
 

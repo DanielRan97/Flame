@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import Aux from "../../../../hoc/Auxiliary/Auxiliary";
-import classes from "./loginForm.module.css";
+import { TextField, Button, Typography, Box, CircularProgress, Link } from "@mui/material";
 import { useSelector } from "react-redux";
-import Loading from "../../../../hoc/UI/loading/loading";
 import PopUpLogin from "../popUpLogin/popUpLogin";
 
 const LoginForm = ({ sendFormData, forgetPassword, startForgetPassword }) => {
@@ -11,7 +9,6 @@ const LoginForm = ({ sendFormData, forgetPassword, startForgetPassword }) => {
     password: "",
   });
   const authLoading = useSelector((state) => state.auth.loading);
-  const loading = <Loading />
 
   const isEmailValid = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,64 +35,86 @@ const LoginForm = ({ sendFormData, forgetPassword, startForgetPassword }) => {
   };
 
   return (
-    <Aux>
-      <form className={classes.LogInForm} onSubmit={handleSubmit}>
-        <h1 className={classes.LoginFormHeader}>Log In</h1>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        maxWidth: 400,
+        margin: "auto",
+        padding: 3,
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        boxShadow: 3,
+        borderRadius: 2,
+        backgroundColor: "background.paper",
+      }}
+    >
+      <Typography variant="h4" textAlign="center" gutterBottom>
+        Log In
+      </Typography>
 
-        <div>
-          <label>
-            <p>Email:</p>
-            <input
-              type="email"
-              name="email"
-              value={loginForm.email}
-              onChange={handleInputChange}
-              required
-            />
-          </label>
-          {!isEmailValid(loginForm.email) && loginForm.email && (
-            <p className={classes.inputError}>
-              Please enter a valid email address.
-            </p>
-          )}
-        </div>
-        <div className={classes.PasswordInputDiv}>
-          <label>
-            <p>Password:</p>
-            <input
-              value={loginForm.password}
-              minLength={2}
-              maxLength={15}
-              type="password"
-              name="password"
-              onChange={handleInputChange}
-              required
-            />
-            {loginForm.password && !isPasswordValid(loginForm.password) && (
-              <p className={classes.inputError}>
-                Password must be at least 8 characters long.
-              </p>
-            )}
-            {forgetPassword === true && (
-              <p
-                className={classes.forgotPasswordLink}
-                onClick={() => {
-                  startForgetPassword();
-                }}
-              >
-                I forgot my password
-              </p>
-            )}
-          </label>
-        </div>
-        {authLoading ? loading :<button
+      <TextField
+        label="Email"
+        type="email"
+        name="email"
+        value={loginForm.email}
+        onChange={handleInputChange}
+        error={!!loginForm.email && !isEmailValid(loginForm.email)}
+        helperText={
+          loginForm.email && !isEmailValid(loginForm.email)
+            ? "Please enter a valid email address."
+            : ""
+        }
+        required
+        fullWidth
+      />
+
+      <TextField
+        label="Password"
+        type="password"
+        name="password"
+        value={loginForm.password}
+        onChange={handleInputChange}
+        error={!!loginForm.password && !isPasswordValid(loginForm.password)}
+        helperText={
+          loginForm.password && !isPasswordValid(loginForm.password)
+            ? "Password must be at least 8 characters long."
+            : ""
+        }
+        required
+        fullWidth
+      />
+
+      {forgetPassword && (
+        <Link
+          component="button"
+          variant="body2"
+          onClick={startForgetPassword}
+          sx={{ textAlign: "center", marginTop: -1 }}
+        >
+          I forgot my password
+        </Link>
+      )}
+
+      {authLoading ? (
+        <Box display="flex" justifyContent="center">
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Button
           type="submit"
+          variant="contained"
+          color="primary"
           disabled={!isFormValid()}
-          className={classes.LogInFormButton}
-        >Log In</button>}
-        <PopUpLogin />
-      </form>
-    </Aux>
+          fullWidth
+        >
+          Log In
+        </Button>
+      )}
+
+      <PopUpLogin />
+    </Box>
   );
 };
 

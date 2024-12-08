@@ -1,14 +1,13 @@
-.AuthContainer .AuthPageHeader{
-    color:var(--text-sceneryColor);
+.AuthContainer{
+    margin-top: 30px;
 }
 
 .AuthContainer .changeForm{
     cursor: pointer;
-    color: orange;
-    font-size: 14px;
+    color: blue;
     text-decoration: underline;
 }
 
 .AuthContainer .changeForm:hover{
-    color: white;
+    color: black;
 }
