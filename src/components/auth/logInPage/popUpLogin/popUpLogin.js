@@ -2,7 +2,11 @@ import React from "react";
 import { Box, IconButton } from "@mui/material";
 import { Google, Facebook } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import { loginWithGoogle, loginWithFacebook, authFailure } from "../../../../ridux/reducers/authSlice";
+import {
+  loginWithGoogle,
+  loginWithFacebook,
+  authFailure,
+} from "../../../../ridux/reducers/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const PopUpLogin = () => {
@@ -42,14 +46,14 @@ const PopUpLogin = () => {
     >
       <IconButton
         onClick={googleLogInHandler}
-        sx={{ color: "#DB4437" }} // Google red color
+        sx={{ color: "primary.main" }}
         aria-label="Login with Google"
       >
         <Google fontSize="large" />
       </IconButton>
       <IconButton
         onClick={facebookLogInHandler}
-        sx={{ color: "#4267B2" }} // Facebook blue color
+        sx={{ color: "primary.main" }}
         aria-label="Login with Facebook"
       >
         <Facebook fontSize="large" />

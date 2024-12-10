@@ -4,10 +4,10 @@
 
 .AuthContainer .changeForm{
     cursor: pointer;
-    color: blue;
+    color: #ea4a10;
     text-decoration: underline;
 }
 
 .AuthContainer .changeForm:hover{
-    color: black;
+    color: white;
 }

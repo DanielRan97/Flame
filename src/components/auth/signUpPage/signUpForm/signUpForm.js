@@ -49,8 +49,8 @@ const SignUpForm = ({ sendDataFromForm }) => {
         }
         break;
       case "password":
-        if (value.length < 8) {
-          error = "Password must be at least 8 characters.";
+        if (value.length < 6) {
+          error = "Password must be at least 6 characters.";
         }
         break;
       case "birthDay":
@@ -121,10 +121,11 @@ const SignUpForm = ({ sendDataFromForm }) => {
       gap: 2,
       boxShadow: 3,
       borderRadius: 2,
-      backgroundColor: "background.paper",
+      color: "text.secondary",
+      bgcolor: "background.paper"
       }}
     >
-      <Typography variant="h4" textAlign="center" gutterBottom>
+      <Typography variant="h4" sx={{color: "text.primary"}} textAlign="center" gutterBottom>
         Sign Up
       </Typography>
 

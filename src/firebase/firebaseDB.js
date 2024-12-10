@@ -41,7 +41,7 @@ const checkIfUserNameExistDB = async (newUserName) => {
     const trimmedNewUserName = newUserName.trim();
 
     for (const key of Object.keys(users)) {
-      if (users[key].userName.trim() === trimmedNewUserName) {
+      if (users[key].userName === trimmedNewUserName) {
         return true;
       }
     }

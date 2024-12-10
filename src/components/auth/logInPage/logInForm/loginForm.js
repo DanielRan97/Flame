@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { TextField, Button, Typography, Box, CircularProgress, Link } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Typography,
+  Box,
+  CircularProgress,
+  Link,
+} from "@mui/material";
 import { useSelector } from "react-redux";
 import PopUpLogin from "../popUpLogin/popUpLogin";
 
@@ -15,7 +22,7 @@ const LoginForm = ({ sendFormData, forgetPassword, startForgetPassword }) => {
     return emailRegex.test(email);
   };
 
-  const isPasswordValid = (password) => password.length >= 8;
+  const isPasswordValid = (password) => password.length >= 6;
 
   const isFormValid = () =>
     isEmailValid(loginForm.email) && isPasswordValid(loginForm.password);
@@ -41,16 +48,17 @@ const LoginForm = ({ sendFormData, forgetPassword, startForgetPassword }) => {
       sx={{
         maxWidth: 400,
         margin: "auto",
+        bgcolor: "background.paper",
+        color: "text.secondary",
         padding: 3,
         display: "flex",
         flexDirection: "column",
         gap: 2,
         boxShadow: 3,
         borderRadius: 2,
-        backgroundColor: "background.paper",
       }}
     >
-      <Typography variant="h4" textAlign="center" gutterBottom>
+      <Typography variant="h4" sx={{color: "text.primary"}} textAlign="center" gutterBottom >
         Log In
       </Typography>
 
@@ -68,6 +76,7 @@ const LoginForm = ({ sendFormData, forgetPassword, startForgetPassword }) => {
         }
         required
         fullWidth
+
       />
 
       <TextField
@@ -79,7 +88,7 @@ const LoginForm = ({ sendFormData, forgetPassword, startForgetPassword }) => {
         error={!!loginForm.password && !isPasswordValid(loginForm.password)}
         helperText={
           loginForm.password && !isPasswordValid(loginForm.password)
-            ? "Password must be at least 8 characters long."
+            ? "Password must be at least 6 characters long."
             : ""
         }
         required

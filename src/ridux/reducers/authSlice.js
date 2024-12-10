@@ -14,6 +14,7 @@ import {
   checkIfEmailExistDB,
 } from "../../firebase/firebaseDB";
 import getFirebaseAuthErrorMessage from "../../utilities/fireBaseError/fireBaseError";
+import createUniqUserName from "../../utilities/createUserName/createUserName";
 
 //sign up
 export const signUp = (userData) => async (dispatch) => {
@@ -93,12 +94,14 @@ export const logIn = (userData) => async (dispatch) => {
 
       return user;
     } else {
-      dispatch(authFailure("Please check that you have verified your account by email."));
-
+      dispatch(
+        authFailure(
+          "Please check that you have verified your account by email."
+        )
+      );
     }
   } catch (error) {
     dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
-
   }
 };
 
@@ -119,9 +122,9 @@ export const ResetPassword = (email) => async (dispatch) => {
 //sign out
 export const signOut = () => async (dispatch) => {
   try {
-     dispatch(authStart());
+    dispatch(authStart());
     await logoutFB();
-     dispatch(logout());
+    dispatch(logout());
     return true;
   } catch (error) {
     dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
@@ -139,10 +142,12 @@ export const loginWithGoogle = () => async (dispatch) => {
     const res = await loginWithGoogleFB();
     const userData = await getOneUserFromDB(res.uid);
     const data = userData || res;
+    let userName = (data.displayName || "").replace(/\s+/g, "");
+    userName = await createUniqUserName(userName);
     const user = {
       uid: data.uid,
       displayName: data.displayName || "",
-      userName: (data.displayName || "").replace(/\s+/g, ""),
+      userName: userName,
       email: data.email || "",
       birthDay: data.birthDay || "",
       creationTime: res.metadata?.creationTime,
@@ -156,7 +161,8 @@ export const loginWithGoogle = () => async (dispatch) => {
     dispatch(authSuccess(user));
     return user;
   } catch (error) {
-    dispatch(authFailure(getFirebaseAuthErrorMessage(error)));  }
+    dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
+  }
 };
 
 //Log in with facebook
@@ -166,10 +172,12 @@ export const loginWithFacebook = () => async (dispatch) => {
     const res = await loginWithFacebookFB();
     const userData = await getOneUserFromDB(res.uid);
     const data = userData || res;
+    let userName = (data.displayName || "").replace(/\s+/g, "");
+    userName = await createUniqUserName(userName);
     const user = {
       uid: data.uid,
       displayName: data.displayName || "",
-      userName: (data.displayName || "").replace(/\s+/g, ""),
+      userName: userName,
       email: data.email || "",
       birthDay: data.birthDay || "",
       creationTime: res.metadata?.creationTime,

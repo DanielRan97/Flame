@@ -5,34 +5,24 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import { authFailure, logout } from "../../../ridux/reducers/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import profilePhoto from "../../../assets/photos/profilePhotos/ph1.png";
+import Aux from "../../Auxiliary/Auxiliary";
 
 function ResponsiveAppBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.auth.user?.uid);
   const navigate = useNavigate();
 
   const settings = isAuth ? ["Profile", "Account", "Dashboard", "Logout"] : ["Profile", "Account", "Dashboard"];
-
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -61,10 +51,10 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
+    <Aux>
+    <AppBar position="static" >
+      <Container maxWidth="xl" sx={{bgcolor: "primary.main"}}>
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -76,7 +66,7 @@ function ResponsiveAppBar() {
               fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
-              color: "inherit",
+              color: "text.primary",
               textDecoration: "none",
             }}
           >
@@ -84,48 +74,20 @@ function ResponsiveAppBar() {
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              color="inherit"
-              onClick={handleOpenNavMenu}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{ display: { xs: "block", md: "none" } }}
-            >
-            </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
-            component="a"   
+            component="a"
             href="/"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
-              flexGrow: 1,
+              flexGrow: 3,
               fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
-              color: "inherit",
+              color: "text.primary",
               textDecoration: "none",
             }}
           >
@@ -134,7 +96,7 @@ function ResponsiveAppBar() {
 
           {/* Align this box to the right */}
           <Box sx={{ flexGrow: 0, marginLeft: "auto" }}>
-            {!isAuth ? <Button variant="outlined" color="secondary" onClick={() => navigate('/auth')}>Log In/Sign Up</Button> : 
+            {!isAuth ? <Button variant="outlined" color="secondary" onClick={() => navigate('/auth')}>Log In/Sign Up</Button> :
              <Tooltip title="Open settings">
              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                <Avatar src={profilePhoto} />
@@ -171,6 +133,7 @@ function ResponsiveAppBar() {
         </Toolbar>
       </Container>
     </AppBar>
+    </Aux>
   );
 }
 

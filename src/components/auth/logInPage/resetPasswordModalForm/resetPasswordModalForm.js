@@ -62,10 +62,8 @@ const ResetPasswordModalForm = ({ modalClose }) => {
         display: "flex",
         flexDirection: "column",
         gap: 2,
-        boxShadow: 3,
         borderRadius: 2,
-        backgroundColor: "background.paper",
-      }}
+            }}
     >
       <Typography variant="h5" textAlign="center" gutterBottom>
         Change your Password
