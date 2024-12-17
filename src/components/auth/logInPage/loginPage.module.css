@@ -1,4 +1,25 @@
-.LoginPage .inputError{
+.LoginPage .inputError {
     font-size: 15px;
     color: red;
+}
+
+.LoginPage .resendVerificationMail {
+    cursor: pointer;
+    color: #ea4a10;
+    text-decoration: underline;
+}
+
+.LoginPage .resendVerificationMail:hover {
+    color: white;
+}
+
+.LoginPage .SendMailAgainLink {
+    color: blue;
+    text-decoration: underline;
+}
+
+.LoginPage .SendMailAgainLink:hover {
+    color: white;
+    cursor: pointer;
+
 }

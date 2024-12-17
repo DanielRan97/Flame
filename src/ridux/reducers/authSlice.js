@@ -17,10 +17,14 @@ import getFirebaseAuthErrorMessage from "../../utilities/fireBaseError/fireBaseE
 import createUniqUserName from "../../utilities/createUserName/createUserName";
 
 //sign up
-export const signUp = (userData) => async (dispatch) => {
+export const signUp = (userData, sendEmailVerification) => async (dispatch) => {
   try {
     dispatch(authStart());
-
+    if(sendEmailVerification === true){
+      await signUpFB(userData.email, userData.password, true);
+      await dispatch(authStop());
+      return;
+    }
     const emailExist = await checkIfEmailExistDB(userData.email);
     if (emailExist === true) {
       throw new Error(`${userData.email} already exists, try to log in`);
@@ -33,7 +37,7 @@ export const signUp = (userData) => async (dispatch) => {
       );
     }
 
-    const res = await signUpFB(userData.email, userData.password);
+    const res = await signUpFB(userData.email, userData.password, false);
 
     if (!res || !res.uid) {
       throw new Error(
@@ -124,13 +128,13 @@ export const signOut = () => async (dispatch) => {
   try {
     dispatch(authStart());
     await logoutFB();
-    dispatch(logout());
+    await dispatch(logout());
     return true;
   } catch (error) {
-    dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
+    await dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
     return false;
   } finally {
-    dispatch(authStop());
+    await dispatch(authStop());
   }
 };
 
@@ -158,16 +162,16 @@ export const loginWithGoogle = () => async (dispatch) => {
     };
 
     await setUserToDB(user, data.uid);
-    dispatch(authSuccess(user));
+    await dispatch(authSuccess(user));
     return user;
   } catch (error) {
-    dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
+    await dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
   }
 };
 
 //Log in with facebook
 export const loginWithFacebook = () => async (dispatch) => {
-  dispatch(authStart());
+  await dispatch(authStart());
   try {
     const res = await loginWithFacebookFB();
     const userData = await getOneUserFromDB(res.uid);
@@ -188,10 +192,10 @@ export const loginWithFacebook = () => async (dispatch) => {
     };
 
     await setUserToDB(user, data.uid);
-    dispatch(authSuccess(user));
+    await dispatch(authSuccess(user));
     return user;
   } catch (error) {
-    dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
+    await dispatch(authFailure(getFirebaseAuthErrorMessage(error)));
     throw new Error(error.message);
   }
 };
@@ -238,7 +242,7 @@ const authSlice = createSlice({
 });
 
 // Export actions
-export const { logout, authStart, authSuccess, authFailure, authStop } =
+export const { logout, authStart, authSuccess, authFailure, authStop  } =
   authSlice.actions;
 
 // Export reducer

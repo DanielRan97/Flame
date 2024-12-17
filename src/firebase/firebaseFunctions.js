@@ -7,10 +7,11 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   FacebookAuthProvider,
+  deleteUser,
 } from "firebase/auth";
 import { auth } from "./firebase";
 
-//log in with google
+// log in with Google
 const googleProvider = new GoogleAuthProvider();
 
 const loginWithGoogleFB = async () => {
@@ -36,7 +37,7 @@ const loginWithFacebookFB = async () => {
   }
 };
 
-//email verification
+// email verification
 const emailVerification = async (user) => {
   try {
     await sendEmailVerification(user);
@@ -45,14 +46,22 @@ const emailVerification = async (user) => {
   }
 };
 
-//sign up with email and password
-const signUpFB = async (email, password) => {
+
+// sign up with email and password
+const signUpFB = async (email, password, sendEmailVerification) => {
   try {
+    if(sendEmailVerification){
+      const user = await loginFB(email, password);
+      await emailVerification(user);
+      await logoutFB();
+      return;
+    }
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
+
     await emailVerification(userCredential.user);
     return userCredential.user;
   } catch (error) {
@@ -60,7 +69,7 @@ const signUpFB = async (email, password) => {
   }
 };
 
-//log in with email and password
+// log in with email and password
 const loginFB = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(
@@ -74,19 +83,28 @@ const loginFB = async (email, password) => {
   }
 };
 
-//reset password for email and password login
+// reset password for email and password login
 const resetPasswordFB = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email);
   } catch (error) {
-    throw new Error (error.message);
+    throw new Error(error.message);
   }
 };
 
-//log out
+// log out
 const logoutFB = async () => {
   try {
     await signOut(auth);
+  } catch (error) {
+    throw error;
+  }
+};
+
+// delete user
+const deleteUserFB = async (user) => {
+  try {
+    await deleteUser(user);
   } catch (error) {
     throw error;
   }
@@ -100,4 +118,5 @@ export {
   emailVerification,
   loginWithGoogleFB,
   loginWithFacebookFB,
+  deleteUserFB,
 };

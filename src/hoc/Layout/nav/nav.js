@@ -10,7 +10,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { authFailure, logout } from "../../../ridux/reducers/authSlice";
+import { authFailure, signOut } from "../../../ridux/reducers/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import profilePhoto from "../../../assets/photos/profilePhotos/ph1.png";
@@ -33,14 +33,14 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
-  const logoutHandler = async () => {
+  const logoutHandler = () => {
     try {
-      const res = await dispatch(logout());
+      const res = dispatch(signOut());
       if (res) {
         navigate(`/auth`);
       }
     } catch (error) {
-      await dispatch(authFailure(error));
+       dispatch(authFailure(error));
     }
   };
 
