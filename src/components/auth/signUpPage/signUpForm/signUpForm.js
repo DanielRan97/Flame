@@ -125,7 +125,7 @@ const SignUpForm = ({ sendDataFromForm }) => {
       bgcolor: "background.paper"
       }}
     >
-      <Typography variant="h4" sx={{color: "text.primary"}} textAlign="center" gutterBottom>
+      <Typography variant="h4" textAlign="center" gutterBottom>
         Sign Up
       </Typography>
 

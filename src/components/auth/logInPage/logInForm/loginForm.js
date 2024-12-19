@@ -58,7 +58,7 @@ const LoginForm = ({ sendFormData, forgetPassword, startForgetPassword }) => {
         borderRadius: 2,
       }}
     >
-      <Typography variant="h4" sx={{color: "text.primary"}} textAlign="center" gutterBottom >
+      <Typography variant="h4" textAlign="center" gutterBottom >
         Log In
       </Typography>
 

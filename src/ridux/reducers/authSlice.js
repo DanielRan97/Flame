@@ -14,13 +14,14 @@ import {
   checkIfEmailExistDB,
 } from "../../firebase/firebaseDB";
 import getFirebaseAuthErrorMessage from "../../utilities/fireBaseError/fireBaseError";
-import createUniqUserName from "../../utilities/createUserName/createUserName";
+import createUniqUserName from "../../utilities/auth/createUserName/createUserName";
+import createUniqFid from "../../utilities/auth/createUniqFid/createUniqFid";
 
 //sign up
 export const signUp = (userData, sendEmailVerification) => async (dispatch) => {
   try {
     dispatch(authStart());
-    if(sendEmailVerification === true){
+    if (sendEmailVerification === true) {
       await signUpFB(userData.email, userData.password, true);
       await dispatch(authStop());
       return;
@@ -56,6 +57,7 @@ export const signUp = (userData, sendEmailVerification) => async (dispatch) => {
       phoneNumber: res.phoneNumber?.trim() || "",
       role: "user",
       loginType: "email and password",
+      fid: await createUniqFid(res.uid),
     };
     await setUserToDB(user, res.uid);
     dispatch(authStop());
@@ -90,6 +92,7 @@ export const logIn = (userData) => async (dispatch) => {
         role: getUser.role ?? "user",
         loginType: "email and password",
         lastLogin: new Date().toISOString(),
+        fid: await createUniqFid(getUser.uid),
       };
 
       dispatch(authSuccess(user));
@@ -147,11 +150,11 @@ export const loginWithGoogle = () => async (dispatch) => {
     const userData = await getOneUserFromDB(res.uid);
     const data = userData || res;
     let userName = (data.displayName || "").replace(/\s+/g, "");
-    userName = await createUniqUserName(userName);
+    let uniqUserName = data.userName || await createUniqUserName(userName, data.uid);
     const user = {
       uid: data.uid,
       displayName: data.displayName || "",
-      userName: userName,
+      userName: uniqUserName,
       email: data.email || "",
       birthDay: data.birthDay || "",
       creationTime: res.metadata?.creationTime,
@@ -159,9 +162,9 @@ export const loginWithGoogle = () => async (dispatch) => {
       role: data.role || "user",
       loginType: "google",
       lastLogin: new Date().toISOString(),
+      fid: await createUniqFid(data.uid),
     };
-
-    await setUserToDB(user, data.uid);
+    await setUserToDB(user, res.uid);
     await dispatch(authSuccess(user));
     return user;
   } catch (error) {
@@ -177,11 +180,12 @@ export const loginWithFacebook = () => async (dispatch) => {
     const userData = await getOneUserFromDB(res.uid);
     const data = userData || res;
     let userName = (data.displayName || "").replace(/\s+/g, "");
-    userName = await createUniqUserName(userName);
+    console.log(data);
+    let uniqUserName = data.userName || await createUniqUserName(userName, data.uid);
     const user = {
       uid: data.uid,
       displayName: data.displayName || "",
-      userName: userName,
+      userName: uniqUserName,
       email: data.email || "",
       birthDay: data.birthDay || "",
       creationTime: res.metadata?.creationTime,
@@ -189,6 +193,7 @@ export const loginWithFacebook = () => async (dispatch) => {
       role: data.role || "user",
       loginType: "facebook",
       lastLogin: new Date().toISOString(),
+      fid: await createUniqFid(data.uid),
     };
 
     await setUserToDB(user, data.uid);
@@ -242,7 +247,7 @@ const authSlice = createSlice({
 });
 
 // Export actions
-export const { logout, authStart, authSuccess, authFailure, authStop  } =
+export const { logout, authStart, authSuccess, authFailure, authStop } =
   authSlice.actions;
 
 // Export reducer

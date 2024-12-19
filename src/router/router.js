@@ -20,7 +20,7 @@ const RouterHandler = () => {
       )}
       {/* Always accessible routes */}
       <Route path="/" element={<HomePage />} />
-      
+
       {/* Redirect unknown routes to the home page */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
