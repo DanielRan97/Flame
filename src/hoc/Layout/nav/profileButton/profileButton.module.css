@@ -1,8 +1,0 @@
-.profileButton, .profileButton .profilePhotoButton {
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
-    background-image: url('../../../../assets/photos/profilePhotos/ph1.png');
-    background-size: cover;
-    background-position: center;
-};

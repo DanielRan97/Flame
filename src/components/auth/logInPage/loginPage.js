@@ -38,7 +38,7 @@ const LoginPage = () => {
     setShowForgetPasswordMessage(false);
     setUserDataState(userData);
     try {
-      const res = await dispatch(logIn(userData)).unwrap();
+      const res = await dispatch(logIn(userData));
       if (res && res.uid) {
         navigate(`/myFlame`);
       }
@@ -68,7 +68,7 @@ const LoginPage = () => {
       />
       {authError && (
         <p className={classes.inputError}>
-          {authError === "Please check that you have verified your account by email." ? (
+          {authError === "Please check that you have verified your account by email." || authError === "Too many requests. Please try again later." ? (
             <>
               {authError} <br />
               <span

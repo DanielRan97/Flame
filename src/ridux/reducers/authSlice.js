@@ -16,6 +16,7 @@ import {
 import getFirebaseAuthErrorMessage from "../../utilities/fireBaseError/fireBaseError";
 import createUniqUserName from "../../utilities/auth/createUserName/createUserName";
 import createUniqFid from "../../utilities/auth/createUniqFid/createUniqFid";
+import createProfilePicture from "../../utilities/auth/createProfilePicture/createProfilePicture";
 
 //sign up
 export const signUp = (userData, sendEmailVerification) => async (dispatch) => {
@@ -58,6 +59,7 @@ export const signUp = (userData, sendEmailVerification) => async (dispatch) => {
       role: "user",
       loginType: "email and password",
       fid: await createUniqFid(res.uid),
+      profilePhoto: createProfilePicture()
     };
     await setUserToDB(user, res.uid);
     dispatch(authStop());
@@ -93,6 +95,7 @@ export const logIn = (userData) => async (dispatch) => {
         loginType: "email and password",
         lastLogin: new Date().toISOString(),
         fid: await createUniqFid(getUser.uid),
+        profilePhoto: getUser.profilePhoto?.trim()
       };
 
       dispatch(authSuccess(user));
@@ -163,6 +166,7 @@ export const loginWithGoogle = () => async (dispatch) => {
       loginType: "google",
       lastLogin: new Date().toISOString(),
       fid: await createUniqFid(data.uid),
+      profilePhoto: data.profilePhoto?.trim() || createProfilePicture()
     };
     await setUserToDB(user, res.uid);
     await dispatch(authSuccess(user));
@@ -180,7 +184,6 @@ export const loginWithFacebook = () => async (dispatch) => {
     const userData = await getOneUserFromDB(res.uid);
     const data = userData || res;
     let userName = (data.displayName || "").replace(/\s+/g, "");
-    console.log(data);
     let uniqUserName = data.userName || await createUniqUserName(userName, data.uid);
     const user = {
       uid: data.uid,
@@ -194,6 +197,8 @@ export const loginWithFacebook = () => async (dispatch) => {
       loginType: "facebook",
       lastLogin: new Date().toISOString(),
       fid: await createUniqFid(data.uid),
+      profilePhoto: data.profilePhoto?.trim() || createProfilePicture()
+
     };
 
     await setUserToDB(user, data.uid);

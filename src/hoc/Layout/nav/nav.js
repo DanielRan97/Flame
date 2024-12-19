@@ -13,48 +13,50 @@ import MenuItem from "@mui/material/MenuItem";
 import { authFailure, signOut } from "../../../ridux/reducers/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import profilePhoto from "../../../assets/photos/profilePhotos/ph1.png";
-import Aux from "../../Auxiliary/Auxiliary";
 
 function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.auth.user?.uid);
+  const profilePhoto = useSelector((state) => state.auth.user?.profilePhoto);
   const navigate = useNavigate();
 
-  const settings = isAuth ? ["Profile", "Account", "Dashboard", "Logout"] : ["Profile", "Account", "Dashboard"];
+  const settings = React.useMemo(
+    () => (isAuth ? ["Profile", "Account", "Dashboard", "Logout"] : ["Profile", "Account", "Dashboard"]),
+    [isAuth]
+  );
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseUserMenu = (key) => {
-    userMenuHandler(key);
-    setAnchorElUser(null);
-  };
-
-  const logoutHandler = () => {
+  
+  const logoutHandler = async () => {
     try {
-      const res = dispatch(signOut());
+      const res = await dispatch(signOut());
       if (res) {
         navigate(`/auth`);
       }
     } catch (error) {
-       dispatch(authFailure(error));
+      dispatch(authFailure(error));
     }
   };
 
-  const userMenuHandler = (key) => {
+  const handleCloseUserMenu = (key) => {
     if (key === "Logout") {
       logoutHandler();
     }
+    setAnchorElUser(null);
   };
+  const profilePhotoSrc = profilePhoto
+  ? require(`../../../${process.env.REACT_APP_PROFILE_PHOTOS}/${profilePhoto}.png`)
+  : undefined;
 
   return (
-    <Aux>
-    <AppBar position="static" >
-      <Container maxWidth="xl" sx={{bgcolor: "primary.main"}}>
+    <AppBar position="static">
+      <Container maxWidth="xl" sx={{ bgcolor: "primary.main" }}>
         <Toolbar disableGutters>
+          {/* Large Screen Title */}
           <Typography
             variant="h6"
             noWrap
@@ -66,15 +68,14 @@ function ResponsiveAppBar() {
               fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
-              color: "text.primary",
+              color: "inherit",
               textDecoration: "none",
             }}
           >
             Flame
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-          </Box>
+          {/* Small Screen Title */}
           <Typography
             variant="h5"
             noWrap
@@ -83,28 +84,36 @@ function ResponsiveAppBar() {
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
-              flexGrow: 3,
+              flexGrow: 1,
               fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
-              color: "text.primary",
+              color: "inherit",
               textDecoration: "none",
             }}
           >
             Flame
           </Typography>
 
-          {/* Align this box to the right */}
-          <Box sx={{ flexGrow: 0, marginLeft: "auto" }}>
-            {!isAuth ? <Button variant="outlined" color="secondary" onClick={() => navigate('/auth')}>Log In/Sign Up</Button> :
-             <Tooltip title="Open settings">
-             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-               <Avatar src={profilePhoto} />
-             </IconButton>
-           </Tooltip>
-            }
+          {/* Right Section */}
+          <Box sx={{ flexGrow: 0, ml: "auto" }}>
+            {!isAuth ? (
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => navigate("/auth")}
+              >
+                Log In/Sign Up
+              </Button>
+            ) : (
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar src={profilePhotoSrc} />
+                </IconButton>
+              </Tooltip>
+            )}
             <Menu
-              disableScrollLock={true}
+              disableScrollLock
               sx={{ mt: "45px" }}
               id="menu-appbar"
               anchorEl={anchorElUser}
@@ -133,7 +142,6 @@ function ResponsiveAppBar() {
         </Toolbar>
       </Container>
     </AppBar>
-    </Aux>
   );
 }
 

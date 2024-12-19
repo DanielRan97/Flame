@@ -22,7 +22,7 @@ const RouterHandler = () => {
       <Route path="/" element={<HomePage />} />
 
       {/* Redirect unknown routes to the home page */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/auth" replace />} />
     </Routes>
   );
 };
